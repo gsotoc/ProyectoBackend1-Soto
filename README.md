@@ -42,7 +42,8 @@ Idealmente deberías crearte una variable de entorno para elegir el puerto a usa
 ¡Listo! Ahora ya sabes cómo instalar y ejecutar el proyecto en tu PC.
 
 
-**Para asegurarnos de que todo funciona correctamente usaremos Postman!**
+
+****Para asegurarnos de que todo funciona correctamente usaremos Postman!****
 
 Para consumir los datos de productos deberías usar las rutas en Postman:
 
@@ -78,7 +79,8 @@ Para consumir los datos de productos deberías usar las rutas en Postman:
 
 
 
-  Para consumir los datos de carritos deberías usar las rutas en Postman:
+
+** ** Para consumir los datos de carritos deberías usar las rutas en Postman:****
 
      **Método get:**
   - http://localhost:PORT/cid - Para obtener un carrito de compras mediante su cid(cartID), de momento hay uno creado que puede usar con id: "c93d603f-d5ab-4d1c-b8d2-b217a3f952f1". Pero sino puedes crear el tuyo antes y se le asignará un ID automático.
