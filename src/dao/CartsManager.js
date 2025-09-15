@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("node:fs");
 const { v4: uuidv4 } = require("uuid");
 const { getFilePath } = require("../config/config");
 

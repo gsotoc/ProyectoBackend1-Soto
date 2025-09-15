@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+    <link rel="stylesheet" href="./home.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🚗 Catálogo de Vehículos</h1>
+        <p>Lista completa de productos disponibles</p>
+    </div>
+
+    {{#if products}}
+        <div class="products-grid">
+            {{#each products}}
+            <div class="product-card">
+                <h2 class="product-title">{{this.title}}</h2>
+                <div class="product-price">${{this.price}}</div>
+                <div class="product-info"><strong>Código:</strong> {{this.code}}</div>
+                <div class="product-info"><strong>Descripción:</strong> {{this.description}}</div>
+                <div class="product-info product-stock"><strong>Stock:</strong> {{this.stock}} unidades</div>
+                <div class="product-info"><strong>Estado:</strong> {{#if this.status}}Disponible{{else}}No disponible{{/if}}</div>
+                <span class="product-category">{{this.category}}</span>
+            </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="no-products">
+            <h2>No hay productos disponibles</h2>
+            <p>Agrega algunos productos para verlos aquí</p>
+        </div>
+    {{/if}}
+
+    <div class="navigation">
+        <a href="/realtimeproducts" class="nav-link">Ver Productos en Tiempo Real</a>
+    </div>
+</body>
+</html>

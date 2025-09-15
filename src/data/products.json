@@ -1,18 +1,5 @@
 [
   {
-    "id": "737ab6ca-7da4-4ed4-a4f2-e207a6e26ff7",
-    "title": "Ford F-150",
-    "description": "Pick-up robusta y potente.",
-    "code": "TRK-001",
-    "price": 35000,
-    "status": true,
-    "stock": 5,
-    "category": "Camionetas",
-    "thumbnails": [
-      "images/ford-f150.jpg"
-    ]
-  },
-  {
     "id": "1cad98df-0edd-47a1-8f42-564fb34c5dba",
     "title": "Kawasaki Ninja 400",
     "description": "Moto deportiva de media cilindrada.",
@@ -41,7 +28,7 @@
     "title": "Tesla Model 3",
     "description": "Sedán eléctrico con tecnología avanzada.",
     "code": "CAR-004",
-    "price": 40000,
+    "price": 42000,
     "status": true,
     "stock": 4,
     "category": "Autos",
@@ -116,7 +103,7 @@
     "title": "Chevrolet Onix",
     "description": "Hatchback económico y versátil.",
     "code": "CAR-003",
-    "price": 21000,
+    "price": 19000,
     "status": true,
     "stock": 20,
     "category": "Autos",
