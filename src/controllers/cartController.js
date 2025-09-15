@@ -1,5 +1,5 @@
-const CartManager = require("../dao/CartsManager"); 
-const cartManager = new CartManager(); 
+const CartsManager = require("../dao/CartsManager"); 
+const cartManager = new CartsManager(); 
 
 exports.createCart = async (req, res) => {
   try {
