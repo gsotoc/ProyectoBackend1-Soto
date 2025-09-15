@@ -34,11 +34,7 @@ Este proyecto es una aplicación backend construida con **Node.js**, utilizando 
 
 4. **Inicializa el proyecto**
    ```bash
-   npm start
-   ```
-   o, si tu archivo principal es distinto, usa:
-   ```bash
-   node src/index.js
+   node app.js
    ```
    *(Cambia el nombre del archivo si es necesario)*
 
@@ -56,13 +52,7 @@ Este proyecto es una aplicación backend construida con **Node.js**, utilizando 
 - **Handlebars**: Motor de plantillas para las vistas.
 - **Socket.io**: Comunicación en tiempo real (websockets).
 
-## Notas adicionales
+----
 
-- Si necesitas agregar más variables de entorno, recuerda agregarlas en el archivo `.env`.
-- Para desarrollo en tiempo real, puedes utilizar herramientas como nodemon.
-- Si tienes dudas sobre la configuración, consulta el archivo `src/config/config.js`.
-
----
-
-¡Listo! Ahora puedes comenzar a desarrollar y probar tu aplicación.
+Al trabajar con websockets para agregar un producto todos los campos del formulario son requeridos, para actualizar un producto unicamente es requerido el ID del producto y puedes ajustar cualquiera de los campos, si dejas alguno vacío no se cambiará (no se puede cambiar el ID) y por último para eliminar un producto es necesario que ingreses el ID del mismo.
 
