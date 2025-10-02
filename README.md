@@ -28,6 +28,7 @@ Este proyecto es una aplicación backend construida con **Node.js**, utilizando 
    - Crea un archivo `.env` en la raíz del proyecto.
    - Ejemplo de contenido:
      ```
+     MONGODB_URI (Te lo paso al entregar el proyecto por la plataforma!!!)
      PORT=8080
      ```
    - Si no defines el puerto, se usará el 8080 por defecto.
@@ -40,10 +41,37 @@ Este proyecto es una aplicación backend construida con **Node.js**, utilizando 
 
 ## Estructura del proyecto
 
-- `src/config/config.js`: Configuración de la aplicación.
-- `src/data/`: Carpeta donde se almacenan los datos.
-- `src/views/`: Carpeta con las vistas Handlebars.
-- `src/public/`: Archivos estáticos (JS, CSS, imágenes).
+├── src/
+│   ├── config/
+│   │   └── config.js
+│   ├── controllers/
+│   │   ├── cartController.js
+│   │   └── productController.js
+│   ├── dao/
+│   │   ├── cartManager.js
+│   │   └── ProductManager.js
+│   ├── middleware/
+│   │   └── cartMiddleware.js
+│   ├── models/
+│   │   ├── Carts.js
+│   │   └── Products.js
+│   ├── public/
+│   │   ├── scripts/
+│   │   │   ├── cart.js
+│   │   │   ├── home.js
+│   │   │   ├── helpers.js
+│   │   │   └── realTimeProducts.js
+│   │   └── styles/
+│   ├── routes/
+│   │   ├── cartsRouter.js
+│   │   └── productsRouter.js
+│   ├── services/
+│   │   └── db.js
+│   ├── sockets/
+│   │   └── webSockets.js
+│   └── views/
+│       └── *.handlebars
+└── app.js
 
 ## Tecnologías principales
 
@@ -51,6 +79,7 @@ Este proyecto es una aplicación backend construida con **Node.js**, utilizando 
 - **Express**: Framework para servidor web.
 - **Handlebars**: Motor de plantillas para las vistas.
 - **Socket.io**: Comunicación en tiempo real (websockets).
+- **MongoDB**: Persistencia de datos.
 
 ----
 
