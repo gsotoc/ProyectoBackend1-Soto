@@ -1,63 +1,175 @@
-const { v4: uuidv4 } = require('uuid');
-const ProductManager = require("../dao/ProductManager");
-const productManager = new ProductManager();
+import ProductManagerMongo from "../dao/ProductManager.js";
 
-exports.getAll = async (req, res) => {
-  const products = await productManager.getProducts();
-  res.json(products);
+const productManager = new ProductManagerMongo();
+
+export const get = async (req, res) => { 
+  try {
+    const { limit, page, sort, query, available } = req.query;
+    
+    const result = await productManager.getProducts({ 
+      limit, 
+      page, 
+      sort, 
+      query,
+      available,
+      baseUrl: "/" 
+    });
+
+    res.render('home', {
+      products: result.payload,
+      pagination: {
+        page: result.page,
+        totalPages: result.totalPages,
+        prevPage: result.prevPage,
+        nextPage: result.nextPage,
+        hasPrevPage: result.hasPrevPage,
+        hasNextPage: result.hasNextPage,
+        prevLink: result.prevLink,
+        nextLink: result.nextLink,
+      },
+      query,
+      available
+    });
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
+    res.render('home', { products: [], error: 'Error al cargar productos' });
+  }
 };
 
-exports.getById = async (req, res) => {
-  const { pid } = req.params;
-  const product = await productManager.getProductById(pid);
-  if (!product) {
-    return res.status(404).json({ error: "Producto no encontrado" });
+export const getById = async (req, res) => { 
+  try {
+    const { pid } = req.params;
+    const product = await productManager.getProductById(pid);
+    
+    if (!product) {
+      return res.status(404).json({ 
+        status: 'error',
+        message: "Producto no encontrado" 
+      });
+    }
+    
+    res.render('details', { product });
+    
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
   }
-  res.json(product);
-}
+};
 
-exports.create = async (req, res) => {
-  const { title, description, code, price, status, stock, category, thumbnails } = req.body;
+export const create = async (req, res) => { 
+  try {
+    const { title, description, code, price, status, stock, category, thumbnails } = req.body;
 
-  if (!title || !description || !code || !price || !stock || !category) {
-    return res.status(400).json({ error: "Faltan campos obligatorios" });
+    if (!title || !description || !code || !price || stock === undefined || !category) {
+      return res.status(400).json({ 
+        status: 'error',
+        message: "Faltan campos obligatorios" 
+      });
+    }
+
+    const newProduct = {
+      title,
+      description,
+      code,
+      price,
+      status: status !== undefined ? status : true,
+      stock,
+      category,
+      thumbnails: thumbnails || []
+    };
+    
+    const product = await productManager.addProduct(newProduct);
+    
+    res.status(201).json({
+      status: 'success',
+      payload: product
+    });
+  } catch (error) {
+    if (error.message.includes('duplicate') || error.message.includes('código')) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'El código del producto ya existe'
+      });
+    }
+    
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
   }
+};
 
-  const newProduct = {
-    id: uuidv4(),
-    title,
-    description,
-    code,
-    price,
-    status: status !== undefined ? status : true,
-    stock,
-    category,
-    thumbnails: thumbnails || []
-  };
-
-  await productManager.addProduct(newProduct);
-  res.status(201).json(newProduct);
-}
-
-exports.update = async (req, res) => {
-  const { pid } = req.params;
-  const updates = req.body;
-
-  const updatedProduct = await productManager.updateProduct(pid, updates);
-  if (!updatedProduct) {
-    return res.status(404).json({ error: 'Producto no encontrado' });
+//Unicamente usado en websockets ya que ahí si quiero mostrar toods los productos sin paginacion
+export const getAll = async (req, res) => {
+  try {
+    const products = await productManager.getAllProducts();
+    res.render('realTimeProducts', { products });
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
+    res.render('realTimeProducts', { products: [], error: 'Error al cargar productos' });
   }
-  
-  res.json(updatedProduct);
-}   
+};
 
-exports.delete = async (req, res) => {
-  const { pid } = req.params;
+export const update = async (req, res) => { 
+  try {
+    const { pid } = req.params;
+    const updates = req.body;
 
-  const deleted = await productManager.deleteProduct(pid);
-  if (!deleted) {
-    return res.status(404).json({ error: 'Producto no encontrado' });
+    // No permitir actualizar el código si ya existe en otro producto
+    if (updates.code) {
+      const existingProducts = await productManager.getProducts({ query: updates.code });
+      if (existingProducts.payload.length > 0 && existingProducts.payload[0]._id.toString() !== pid) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'El código del producto ya existe'
+        });
+      }
+    }
+
+    const updatedProduct = await productManager.updateProduct(pid, updates);
+    
+    if (!updatedProduct) {
+      return res.status(404).json({ 
+        status: 'error',
+        message: 'Producto no encontrado' 
+      });
+    }
+    
+    res.json({
+      status: 'success',
+      payload: updatedProduct
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
   }
+};
 
-  res.json({ message: 'Producto eliminado correctamente' });
-}   
+export const deleteProduct = async (req, res) => { 
+  try {
+    const { pid } = req.params;
+
+    const deleted = await productManager.deleteProduct(pid);
+    
+    if (!deleted) {
+      return res.status(404).json({ 
+        status: 'error',
+        message: 'Producto no encontrado' 
+      });
+    }
+
+    res.json({ 
+      status: 'success',
+      message: 'Producto eliminado correctamente' 
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};

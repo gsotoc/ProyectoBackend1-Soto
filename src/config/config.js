@@ -1,12 +1,7 @@
-const path = require('node:path');
-const dotenv = require('dotenv').config();
-const port = process.env.PORT || 8080;
+import dotenv from 'dotenv';
+dotenv.config();
+
+export const MONGODB_URI = process.env.MONGODB_URI;
+export const PORT = process.env.PORT || 8080;
 
 
-module.exports = {
-  PORT: port,
-  getFilePath: (fileName) => path.join(__dirname, `../data/${fileName}`), 
-};
-  
-
-  

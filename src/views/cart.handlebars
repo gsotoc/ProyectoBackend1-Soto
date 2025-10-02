@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/styles/cart.css">
+</head>
+<body>
+  <div class="container cart-container">
+    <h1>{{title}}</h1>
+    
+    {{#if cart.products.length}}
+      <div class="cart-content">
+        <div class="products-list">
+          {{#each cart.products}}
+            <div class="cart-item" data-product-id="{{this.productId._id}}">
+              <div class="product-info">
+                {{#if this.productId.thumbnail}}
+                  <img src="{{this.productId.thumbnail}}" alt="{{this.productId.title}}">
+                {{else}}
+                  <div class="no-image">Sin imagen</div>
+                {{/if}}
+                
+                <div class="product-details">
+                  <h3>{{this.productId.title}}</h3>
+                  <p class="product-description">{{this.productId.description}}</p>
+                  <p class="product-price">${{this.productId.price}}</p>
+                </div>
+              </div>
+
+              <div class="quantity-controls">
+                <button class="btn-quantity" data-action="decrease">-</button>
+                <input 
+                  type="number" 
+                  class="quantity-input" 
+                  value="{{this.quantity}}" 
+                  min="1"
+                  data-product-id="{{this.productId._id}}"
+                >
+                <button class="btn-quantity" data-action="increase">+</button>
+              </div>
+
+              <div class="item-summary">
+                <p class="subtotal">Subtotal: $<span class="subtotal-value">{{this.subtotal}}</span></p>
+                <button class="btn-remove" data-product-id="{{this.productId._id}}">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+
+        <div class="cart-summary">
+          <h2>Resumen del Pedido</h2>
+          <div class="summary-line">
+            <span>Total de productos:</span>
+            <span>{{cart.products.length}}</span>
+          </div>
+          <div class="summary-line total">
+            <span>Total:</span>
+            <span class="total-amount">${{cart.total}}</span>
+          </div>
+          <button class="btn-clear-cart">Vaciar Carrito</button>
+          <button class="btn-checkout">Finalizar Compra</button>
+        </div>
+      </div>
+    {{else}}
+      <div class="empty-cart">
+        <p>Tu carrito está vacío</p>
+        <a href="/" class="btn-continue">Continuar Comprando</a>
+      </div>
+    {{/if}}
+
+    <a href="/" class="btn-back">← Volver a productos</a>
+  </div>
+  <script>
+    const cartId = "{{cartId}}";
+  </script>
+  <script src="/scripts/cart.js"></script>
+</body>
+</html>
