@@ -17,8 +17,6 @@ class ProductManagerMongo {
         ];
       }
 
-      console.log('Filter aplicado:', JSON.stringify(filter));
-
       let sortOption = {};
       if (sort) {
         sortOption.price = sort === "asc" ? 1 : -1;
@@ -160,5 +158,6 @@ class ProductManagerMongo {
     }
   }
 }
+
 
 export default ProductManagerMongo;
