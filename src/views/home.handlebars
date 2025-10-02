@@ -4,18 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos</title>
-    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="./styles/home.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-container">
+
+            <div class="navbar-filters">
+                <div class="filter-group">
+                    <label for="category-filter">Categoría:</label>
+                    <select id="category-filter" class="filter-select">
+                        <option value="">Todas</option>
+                        <option value="Autos">Autos</option>
+                        <option value="Motos">Motos</option>
+                        <option value="Camionetas">Camionetas</option>
+                        <option value="SUV">SUV</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Precio:</label>
+                    <button id="price-asc" class="filter-btn">
+                        ↑ Menor
+                    </button>
+                    <button id="price-desc" class="filter-btn">
+                        ↓ Mayor
+                    </button>
+                </div>
+
+                <div class="filter-group">
+                    <label for="search-input">Buscar:</label>
+                    <input type="text" id="search-input" class="filter-input" placeholder="Buscar productos..."/>
+                </div>
+
+                <button id="toggle-available" class="btn-toggle-available">
+                     Mostrar Disponibles
+                </button>
+
+                <button class="go-btn" >
+                    Ir
+                </button>
+
+                <button class="clear-filters">
+                    Limpiar
+                </button>
+            </div>
+
+            {{#if cartId}}
+                <div class="navbar-cart">
+                    <a href="/carts/{{cartId}}" class="nav-link">🛒 Carrito</a>
+                </div>
+            {{/if}}
+
+            <div class="navbar-nav">
+                <a href="/realtimeproducts" class="nav-link">Tiempo Real</a>
+            </div>
+
+        </div>
+    </nav>
+
     <div class="header">
         <h1>🚗 Catálogo de Vehículos</h1>
-        <p>Lista completa de productos disponibles</p>
+        <p>Listado de productos</p>
     </div>
+
+    {{#if pagination}}
+    <div class="pagination-bar">
+
+        {{!-- Página actual / total --}}
+        <div class="pagination-info">
+        Página <strong>{{pagination.page}}</strong> de <strong>{{pagination.totalPages}}</strong>
+        </div>
+
+        <div class="pagination-controls">
+        {{!-- Botón anterior --}}
+        {{#if pagination.hasPrevPage}}
+            <a href="{{pagination.prevLink}}" class="page-btn">← Anterior</a>
+        {{else}}
+            <span class="page-btn disabled">← Anterior</span>
+        {{/if}}
+
+        {{!-- Botón siguiente --}}
+        {{#if pagination.hasNextPage}}
+            <a href="{{pagination.nextLink}}" class="page-btn">Siguiente →</a>
+        {{else}}
+            <span class="page-btn disabled">Siguiente →</span>
+        {{/if}}
+        </div>
+        
+    </div>
+    {{/if}}
+
 
     {{#if products}}
         <div class="products-grid">
             {{#each products}}
-            <div class="product-card">
+            <div class="product-card" id="{{this._id}}">
                 <h2 class="product-title">{{this.title}}</h2>
                 <div class="product-price">${{this.price}}</div>
                 <div class="product-info"><strong>Código:</strong> {{this.code}}</div>
@@ -23,18 +107,31 @@
                 <div class="product-info product-stock"><strong>Stock:</strong> {{this.stock}} unidades</div>
                 <div class="product-info"><strong>Estado:</strong> {{#if this.status}}Disponible{{else}}No disponible{{/if}}</div>
                 <span class="product-category">{{this.category}}</span>
+
+                <div class="product-actions">
+                    <a href="/{{this._id}}">
+                        <button class="go-details">Ver detalles</button>
+                    </a>
+                    <button class="go-cart" data-product-id="{{this._id}}">
+                         Agregar al carrito
+                    </button>
+                </div>
             </div>
             {{/each}}
         </div>
     {{else}}
         <div class="no-products">
             <h2>No hay productos disponibles</h2>
-            <p>Agrega algunos productos para verlos aquí</p>
         </div>
     {{/if}}
 
     <div class="navigation">
         <a href="/realtimeproducts" class="nav-link">Ver Productos en Tiempo Real</a>
     </div>
+
+    <script>
+        window.cartId = "{{cartId}}";
+    </script>
+    <script src="/scripts/home.js"></script>
 </body>
 </html>
