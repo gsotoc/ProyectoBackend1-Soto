@@ -1,76 +1,164 @@
-const CartsManager = require("../dao/CartsManager"); 
-const cartManager = new CartsManager(); 
+import CartManagerMongo from "../dao/cartManager.js";
 
-exports.createCart = async (req, res) => {
+const cartManager = new CartManagerMongo();
+
+// Crear carrito
+export const createCart = async (req, res) => { 
   try {
-    const products = req.body;
-
-    if (!Array.isArray(products) || products.length === 0) {
-      return res.status(400).json({ error: "Debes enviar un array de productos." });
-    }
-    
-    const cart = await cartManager.createCart(products);
-    res.status(201).json(cart);
+    const cart = await cartManager.createCart();
+    res.status(201).json({
+      status: 'success',
+      payload: cart
+    });
   } catch (error) {
-    console.error("Error en createCart:", error);
-    res.status(500).json({ error: "Error al crear el carrito", details: error.message });
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
   }
 };
 
-exports.getById = async (req, res) => {
+// Obtener carrito por ID y renderizar vista
+export const cartById = async (req, res) => {
   try {
-    const id = req.params.cid;
-
-    if(!id){
-      return res.status(400).json({ error: "Debes ingresar el ID del carrito"});
-    }
-
-    const cart = await cartManager.getCartById(id);
-
-    if(!cart) {
-      return res.status(404).json({ error: "Carrito no encontrado" });
-    } 
-    
-    res.status(200).json(cart);
-
-  } catch (error) {
-      console.error("Error en getById:", error);
-      res.status(500).json({ error: "Error al obtener el carrito", details: error.message });
-  }
-  
-};
-
-exports.update = async (req, res) => {
-  const { cid, pid } = req.params;
-  const { quantity } = req.body; 
-
-  try {
-
-    if (!cid || !pid) {
-      return res.status(400).json({ error: "Debes enviar el ID del carrito y del producto" });
-    }
-    if (typeof quantity !== "number" || quantity <= 0) {
-      return res.status(400).json({ error: "Debes enviar una cantidad válida" });
-    }
-
+    const { cid } = req.params;
     const cart = await cartManager.getCartById(cid);
-    if (!cart) {
-      return res.status(404).json({ error: "Carrito no encontrado" });
-    }
 
-    const productIndex = cart.products.findIndex(p => p.id === pid);
+    const cartObj = cart.toObject();
 
-    if (productIndex !== -1) {
-      cart.products[productIndex].quantity += quantity;
-    } else {
-      cart.products.push({ id: pid, quantity });
-    }
+    let total = 0;
+    cartObj.products = cartObj.products.map(item => {
+      const subtotal = item.quantity * item.productId.price;
+      total += subtotal;
+      return { 
+        ...item, 
+        subtotal 
+      };
+    });
 
-    const updatedCart = await cartManager.updateCart(cid, cart.products);
+    cartObj.total = total;
 
-    res.status(200).json({ message: "Producto actualizado en el carrito", cart: updatedCart });
+    res.render("cart", {
+      title: "Mi Carrito",
+      cart: cartObj
+    });
+
   } catch (error) {
-    console.error("Error en update:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
+    res.status(404).render("error", {
+      title: "Error",
+      message: error.message
+    });
+  }
+};
+
+// Agregar/actualizar producto en carrito
+export const update = async (req, res) => { 
+  try {
+    const { cid, pid } = req.params;
+    const { quantity = 1 } = req.body;
+    
+    const cart = await cartManager.addProductToCart(cid, pid, quantity);
+    
+    res.json({
+      status: 'success',
+      payload: cart
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Actualizar todo el carrito con un array de productos
+export const updateCart = async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const { products } = req.body;
+
+    if (!Array.isArray(products)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Se requiere un array de productos'
+      });
+    }
+
+    const cart = await cartManager.updateCart(cid, products);
+
+    res.json({
+      status: 'success',
+      payload: cart
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Actualizar solo la cantidad de un producto específico
+export const updateProductQuantity = async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+
+    if (!quantity || quantity <= 0) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'La cantidad debe ser mayor a 0'
+      });
+    }
+
+    const cart = await cartManager.updateProductQuantity(cid, pid, quantity);
+
+    res.json({
+      status: 'success',
+      payload: cart
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Eliminar un producto específico del carrito
+export const removeProduct = async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    
+    const cart = await cartManager.removeProductFromCart(cid, pid);
+
+    res.json({
+      status: 'success',
+      payload: cart
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
+  }
+};
+
+// Eliminar todos los productos del carrito
+export const clearCart = async (req, res) => {
+  try {
+    const { cid } = req.params;
+    
+    const cart = await cartManager.clearCart(cid);
+
+    res.json({
+      status: 'success',
+      payload: cart
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message
+    });
   }
 };
