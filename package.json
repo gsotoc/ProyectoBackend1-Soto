@@ -2,8 +2,10 @@
   "name": "proyectoback1",
   "version": "1.0.0",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +15,13 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-handlebars": "^8.0.3",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.18.2",
+    "mongoose-paginate-v2": "^1.9.1",
     "socket.io": "^4.8.1",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{product.title}}</title>
+  <link rel="stylesheet" href="/styles/home.css">  
+</head>
+<body>
+  <nav class="navbar">
+        <div class="navbar-container">
+            <div>
+                <a href="/">Voler a inicio</a>
+            </div>
+            <div class="navbar-nav">
+                <a href="/realtimeproducts" class="nav-link">Tiempo Real</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1>🚗 Detalles del producto</h1>
+    </div>
+
+  <main class="product-details-container">
+
+    <div class="product-image">
+      {{#if product.thumbnails.[0]}}
+        <img src="/{{product.thumbnails.[0]}}" alt="{{product.title}}">
+      {{else}}
+        <img src="/images/default.jpg" alt="Sin imagen">
+      {{/if}}
+    </div>
+
+    <div class="product-details">
+      <h2 class="product-title">{{product.title}}</h2>
+      <div class="product-price">${{product.price}}</div>
+      
+      <div class="product-info"><strong>Descripción:</strong> {{product.description}}</div>
+      <div class="product-info"><strong>Categoría:</strong> {{product.category}}</div>
+      <div class="product-info"><strong>Código:</strong> {{product.code}}</div>
+      <div class="product-info product-stock"><strong>Stock:</strong> {{product.stock}} unidades</div>
+      <div class="product-info"><strong>Estado:</strong> {{#if product.status}}Disponible{{else}}No disponible{{/if}}</div>
+
+      <a href="/" >
+       <button>Volver a inicio</button>
+      </a>  
+    </div>
+
+  </main>
+
+  <div class="navigation">
+    <a href="/realtimeproducts" class="nav-link">Ver Productos en Tiempo Real</a>
+  </div>
+
+  <script src="./scripts/home.js"></script>
+</body>
+</html>
